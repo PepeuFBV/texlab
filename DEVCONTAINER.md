@@ -18,6 +18,12 @@ Logs and inspection:
 - Watcher logs: `/tmp/latex-watch-*.log`
 - Watcher PIDs: `/tmp/devcontainer-latex-pids`
 
+> [!WARNING]
+> The build and up process for the container may take more than 25 minutes due to the TeX Live installation and initial build. Please be patient during the first setup.
+
+> [!NOTE]
+> The complete container is about 9GB in size, largely due to the TeX Live installation. Consider this when working with limited disk space.
+
 If you prefer explicit control, you can stop watchers by killing PIDs listed in `/tmp/devcontainer-latex-pids` and run builds manually with:
 
 ```bash
