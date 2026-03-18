@@ -1,0 +1,36 @@
+# LaTeX build artifacts and editor/temp files for this folder
+# Keep source files: main.tex, sections/, referencias.bib, images/
+
+# LaTeX auxiliary files
+*.aux
+*.log
+*.toc
+*.out
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.run.xml
+
+# Sync and indexing
+*.synctex.gz
+
+# Bibliography and bibtex/biber outputs (optional: remove if you want to keep main.bbl in repo)
+*.bbl
+*.blg
+
+# PDF build artifact (optional: remove if you want to commit built PDF)
+*.pdf
+
+# Editor swap / backup files
+.*.swp
+*.sw?
+
+# latexindent log
+indent.log
+
+# pdflatex generated fls with pid
+pdflatex*.fls
+
+# bibtex/biber generated bbl
+*.bbl
