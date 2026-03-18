@@ -1,0 +1,43 @@
+\section{Cronograma de Execução}
+
+% configurações da tabela de cronograma
+\newcommand{\anoA}{20XX}
+\newcommand{\anoB}{20XX}
+\newcommand{\mesI}{Set}
+\newcommand{\mesII}{Out}
+\newcommand{\mesIII}{Nov}
+\newcommand{\mesIV}{Dez}
+\newcommand{\mesV}{Jan}
+\newcommand{\mesVI}{Fev}
+\newcommand{\mesVII}{Mar}
+\newcommand{\mesVIII}{Abr}
+\newcommand{\mesIX}{Mai}
+\newcommand{\mesX}{Jun}
+\newcommand{\mesXI}{Jul}
+\newcommand{\mesXII}{Ago}
+\newcommand{\feito}{\checkmark}
+
+\renewcommand{\arraystretch}{1.2} % distancia horizontal entre linhas
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{3.6cm}|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        \multirow{2}{*}{\textbf{ATIVIDADES}} & \multicolumn{4}{c|}{\textbf{Ano \anoA}} & \multicolumn{8}{c|}{\textbf{Ano \anoB}}                                                                                                                                                                                        \\
+        \cline{2-13}
+                                             & \textbf{\mesI}                          & \textbf{\mesII}                         & \textbf{\mesIII} & \textbf{\mesIV} & \textbf{\mesV} & \textbf{\mesVI} & \textbf{\mesVII} & \textbf{\mesVIII} & \textbf{\mesIX} & \textbf{\mesX} & \textbf{\mesXI} & \textbf{\mesXII} \\
+        \hline
+        A.1: AÇÃO 1                          & \feito                                  & \feito                                  &                  &                 &                &                 &                  &                   &                 &                &                 &                  \\
+        \hline
+        A.2: AÇÃO 2                          &                                         & \feito                                  & \feito           & \feito          &                &                 &                  &                   &                 &                &                 &                  \\
+        \hline
+        A.3: AÇÃO 3                          &                                         &                                         & \feito           & \feito          & \feito         &                 &                  &                   &                 &                &                 &                  \\
+        \hline
+        A.4: AÇÃO 4                          &                                         &                                         &                  &                 & \feito         & \feito          & \feito           & \feito            & \feito          & \feito         &                 &                  \\
+        \hline
+        A.5: AÇÃO 5                          &                                         &                                         &                  &                 &                &                 &                  &                   & \feito          & \feito         & \feito          &                  \\
+        \hline
+        A.6: AÇÃO 6                          &                                         &                                         &                  &                 &                &                 &                  &                   &                 & \feito         & \feito          & \feito           \\
+        \hline
+    \end{tabular}
+    \caption{Tabela de Atividades para \anoA--\anoB}
+\end{table}
