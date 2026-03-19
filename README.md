@@ -36,13 +36,30 @@ Veja o exemplo existente em `ufrpe/pibic/parcial` para um projeto funcional.
 Para adicionar um novo modelo para universidade/programa:
 
 1. Crie uma nova pasta com o padrão `/<instituicao>/<programa>/<nome-modelo>`.
+
 2. Adicione um `main.tex`, uma pasta mínima `sections/`, `images/` e `references.bib` (se necessário).
+
 3. Adicione um `README.md` curto na pasta do modelo descrevendo pacotes LaTeX necessários e passos de compilação.
+
 4. Siga as orientações em [CONTRIBUTING.md](CONTRIBUTING.md) e abra um pull request.
 
 ## Desenvolvimento & DevContainers
 
 Recomendamos usar um DevContainer para garantir ferramentas LaTeX consistentes entre colaboradores. Veja [DEVCONTAINER.md](DEVCONTAINER.md) para uma sugestão de configuração (TeX Live, latexmk e pacotes LaTeX comuns).
+
+## Planejamento futuro
+
+- Adicionar mais templates para diferentes instituições e programas.
+
+- CI/CD para validar compilações de templates adicionados e PRs.
+
+- Template para mensagens de PRs para garantir que novos templates sigam o formato esperado e seja fácil para revisores entenderem o que está sendo adicionado.
+
+- Versionamento automático para lançamentos de templates estáveis.
+
+- Script para extração de templates.
+
+- Guia de estilo para templates (estrutura de pastas, convenções de nomenclatura, etc.) para garantir consistência.
 
 ## Contribuindo
 
@@ -52,7 +69,7 @@ Consulte [CONTRIBUTING.md](CONTRIBUTING.md) para detalhes sobre como adicionar u
 
 Se precisar de ajuda para adicionar templates para sua instituição/programa, abra uma issue ou PR com o template e um PDF de exemplo.
 
-Obrigado por contribuir! — Mantenedores do Texlab
+Obrigado por contribuir!
 
 ## Licença
 
