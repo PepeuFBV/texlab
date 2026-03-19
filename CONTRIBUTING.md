@@ -1,4 +1,4 @@
- # Contribuindo para o texlab
+ # Contribuindo
 
  ## Convenção de Commits
 
