@@ -14,7 +14,7 @@ Fornecer um repositório único onde colaboradores possam adicionar setups pront
 
 - Exemplos contendo imagens, seções e bibliografia para demonstrar fluxos de trabalho comuns.
 
-## Estrutura do repositório (exemplo)
+## Estrutura do repositório
 
 Pastas de nível superior normalmente seguem este padrão:
 
@@ -23,11 +23,11 @@ Pastas de nível superior normalmente seguem este padrão:
 		- `parcial/` — etapa do projeto
         - `final/` — etapa do projeto
 
-Veja o exemplo existente em `ufrpe/pibic/parcial` para um projeto funcional.
+Veja o exemplo existente em `ufrpe/pibic/final` para um projeto funcional.
 
 ## Começando
 
-1. Escolha uma pasta de exemplo (por exemplo `ufrpe/pibic/parcial`).
+1. Escolha uma pasta de exemplo (por exemplo `ufrpe/pibic/final`).
 
 2. Abra a pasta no VS Code. Para um ambiente reproduzível, consulte [DEVCONTAINER.md](DEVCONTAINER.md).
 
