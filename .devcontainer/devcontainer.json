@@ -4,15 +4,22 @@
         "dockerfile": "Dockerfile",
         "context": ".."
     },
-    "settings": {
-        "terminal.integrated.shell.linux": "/bin/bash",
-        "latex-workshop.latex.autoBuild.run": "onFileChange",
-        "latex-workshop.latex.watch.files.usePolling": true
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash",
+                "latex-workshop.latex.autoBuild.run": "onFileChange",
+                "latex-workshop.latex.watch.files.usePolling": true
+            },
+            "extensions": [
+                "james-yu.latex-workshop"
+            ]
+        }
     },
-    "extensions": [
-        "james-yu.latex-workshop"
+    "runArgs": [
+        "--env-file",
+        ".devcontainer/.env.resources"
     ],
-    "postCreateCommand": "latexmk -pdf -cd -interaction=nonstopmode -file-line-error ufrpe/pibic/final/main.tex > /tmp/devcontainer-latex.log 2>&1 || (cat /tmp/devcontainer-latex.log || true)",
-    "postStartCommand": ".devcontainer/start-watchers.sh || true",
+    // "postStartCommand": ".devcontainer/start-watchers.sh || true", // for debugging
     "remoteUser": "vscode"
 }

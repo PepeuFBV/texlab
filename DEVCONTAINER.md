@@ -29,3 +29,21 @@ If you prefer explicit control, you can stop watchers by killing PIDs listed in 
 ```bash
 latexmk -pdf -cd -interaction=nonstopmode -file-line-error path/to/main.tex
 ```
+
+Resource limits
+--------------
+
+This DevContainer uses the environment file at `.devcontainer/.env.resources` to provide conservative defaults for container resource usage. Current defaults:
+
+- `MEM_LIMIT`: 2G
+- `CPU_LIMIT`: 1
+
+To change limits for your local machine, edit [`.devcontainer/.env.resources`](.devcontainer/.env.resources) or override the variables in your local `devcontainer.json` before rebuilding.
+
+After changing limits, rebuild the container from the Command Palette: "Dev Containers: Rebuild Container".
+
+Quick rebuild command (VS Code Command Palette):
+
+```bash
+# Open Command Palette (Ctrl+Shift+P) → "Dev Containers: Rebuild Container"
+```

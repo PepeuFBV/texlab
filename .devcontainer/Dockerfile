@@ -12,7 +12,18 @@ RUN apt-get update \
         ghostscript \
         fonts-dejavu-core \
         make \
-    && apt-get install -y --no-install-recommends texlive-full \
+    && apt-get install -y --no-install-recommends \
+        latexmk \
+        texlive-binaries \
+        texlive-latex-recommended \
+        texlive-latex-extra \
+        texlive-fonts-recommended \
+        texlive-pictures \
+        texlive-bibtex-extra \
+        texlive-publishers \
+        texlive-lang-portuguese \
+        xdg-utils \
+        zathura \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

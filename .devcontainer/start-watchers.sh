@@ -1,6 +1,8 @@
 
 #!/bin/bash
+
 # Start latexmk -pvc watchers for every discovered main.tex
+
 set -euo pipefail
 LOGDIR=/tmp
 PIDSFILE=${LOGDIR}/devcontainer-latex-pids
