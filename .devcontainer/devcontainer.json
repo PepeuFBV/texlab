@@ -9,7 +9,9 @@
             "settings": {
                 "terminal.integrated.shell.linux": "/bin/bash",
                 "latex-workshop.latex.autoBuild.run": "onFileChange",
-                "latex-workshop.latex.watch.files.usePolling": true
+                "latex-workshop.latex.watch.files.usePolling": true,
+                "latex-workshop.latexindent.path": "/usr/local/bin/latexindent",
+                "latex-workshop.formatting.latexindent.path": "/usr/local/bin/latexindent",
             },
             "extensions": [
                 "james-yu.latex-workshop"
@@ -20,6 +22,7 @@
         "--env-file",
         ".devcontainer/.env.resources"
     ],
-    // "postStartCommand": ".devcontainer/start-watchers.sh || true", // for debugging
+    "postCreateCommand": "(latexindent --version || latexindent.pl --version) > /tmp/devcontainer-latexindent.log 2>&1 || true",
+    "postStartCommand": ".devcontainer/start-watchers.sh || true",
     "remoteUser": "vscode"
 }
