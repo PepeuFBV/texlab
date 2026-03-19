@@ -1,49 +1,53 @@
-# Contributing to texlab
+ # Contribuindo para o texlab
 
-## Commit Convention
+ ## Convenção de Commits
 
-Use [Conventional Commits](https://www.conventionalcommits.org/):
-- `feat:` new feature
-- `fix:` bug fix
-- `docs:` documentation changes
-- `style:` code style (formatting, missing semicolons)
-- `refactor:` code refactoring
-- `perf:` performance improvements
-- `test:` adding/updating tests
-- `chore:` dependencies, build config
+ Use [Conventional Commits](https://www.conventionalcommits.org/):
 
-Example: `feat(parser): add support for custom macros`
+ - `feat:` nova funcionalidade
+ - `fix:` correção de bug
+ - `docs:` alterações na documentação
+ - `style:` estilo de código (formatação, ponto-e-vírgula faltando)
+ - `refactor:` refatoração de código
+ - `perf:` melhorias de desempenho
+ - `test:` adicionar/atualizar testes
+ - `chore:` dependências, configuração de build
 
-## Branch Naming
+ Exemplo: `feat(parser): add support for new LaTeX package`
 
-- Feature: `feature/description`
-- Fix: `fix/description`
-- Docs: `docs/description`
+ > [!NOTE]
+ > Mantenha os commits e nome de branches em inglês para consistência, mesmo que o conteúdo seja em português.
 
-Example: `feature/latexindent-support`
+ ## Nomeação de Branches
 
-## Pull Request Process
+ - Feature: `feature/description`
+ - Fix: `fix/description`
+ - Docs: `docs/description`
 
-1. Create feature branch from `main`
+ Exemplo: `feature/latexindent-support`
 
-2. Keep commits atomic and descriptive
+ ## Processo de Pull Request
 
-4. Update documentation if needed
+ 1. Crie a branch de feature a partir de `main`.
 
-5. Ensure CI passes
+ 2. Mantenha commits atômicos e descritivos.
 
-6. Request review before merge
+ 3. Atualize a documentação se necessário.
 
-## Code Style
+ 4. Garanta que o CI esteja passando.
 
-- Follow existing project conventions
+ 5. Solicite revisão antes de fazer o merge.
 
-- Use existing directory structure for new templates
+ ## Estilo de Código
 
-## Reporting Issues
+ - Siga as convenções existentes do projeto.
+ 
+ - Use a estrutura de diretórios já existente para novos templates.
 
-- Use clear, descriptive titles
+ ## Reportando Issues
 
-- Include relevant environment details
+ - Use títulos claros e descritivos.
 
-- Provide minimal reproduction steps
+ - Inclua detalhes relevantes do ambiente (sistema, versão do TeX Live, comandos usados).
+
+ - Forneça passos mínimos para reproduzir o problema.
