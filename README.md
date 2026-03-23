@@ -1,5 +1,7 @@
 # TexAcademy
 
+[![Open in Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?repository=PepeuFBV/texacademy&ref=main&devcontainer_path=.devcontainer)
+
 TexAcademy é uma coleção de setups reproduzíveis para compilação LaTeX, templates e "modelos" de ambiente direcionados a diferentes universidades e programas (por exemplo: PIBIC, PIC, PIBITI, relatórios de graduação, teses e outros formatos institucionais).
 
 ## Objetivo
@@ -19,8 +21,8 @@ Fornecer um repositório único onde colaboradores possam adicionar setups pront
 Pastas de nível superior normalmente seguem este padrão:
 
 - `ufrpe/` — exemplo de instituição (contém pastas por programa)
-	- `pibic/` — pasta do programa
-		- `parcial/` — etapa do projeto
+    - `pibic/` — pasta do programa
+        - `parcial/` — etapa do projeto
         - `final/` — etapa do projeto
 
 Veja o exemplo existente em `ufrpe/pibic/final` para um projeto funcional.
@@ -46,6 +48,18 @@ Para adicionar um novo modelo para universidade/programa:
 ## Desenvolvimento & DevContainers
 
 Recomendamos usar um DevContainer para garantir ferramentas LaTeX consistentes entre colaboradores. Veja [DEVCONTAINER.md](DEVCONTAINER.md) para uma sugestão de configuração (TeX Live, latexmk e pacotes LaTeX comuns).
+
+## GitHub Codespaces
+
+Este repositório já inclui um DevContainer em `.devcontainer` preparado para compilação LaTeX (veja `.devcontainer/devcontainer.json`).
+
+GitHub Codespaces permite criar ambientes de desenvolvimento na nuvem baseados em DevContainers, tornando possível compilar e editar projetos LaTeX sem instalar ferramentas localmente.
+
+Como usar:
+
+- Clique em "Code" no GitHub e escolha "Codespaces" → "Create codespace on main" (ou na branch desejada), ou use o botão acima para abrir um Codespace pré-configurado.
+
+- O DevContainer do repositório configura TeX Live, `latexmk`, `latexindent` e a extensão LaTeX Workshop automaticamente.
 
 ## Planejamento futuro
 
