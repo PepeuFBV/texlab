@@ -2,32 +2,25 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:debian
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        build-essential \
-        git \
-        wget \
-        ca-certificates \
-        poppler-utils \
-        ghostscript \
-        fonts-dejavu-core \
-        make \
-        latexmk \
-        texlive-binaries \
-        texlive-latex-recommended \
-        texlive-latex-extra \
-        texlive-fonts-recommended \
-        texlive-pictures \
-        texlive-bibtex-extra \
-        libyaml-perl \
-        libfile-which-perl \
-        perl \
-        texlive-publishers \
-        texlive-lang-portuguese \
-        xdg-utils \
-        zathura \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN set -eux; \
+  PACKAGES="build-essential git wget ca-certificates poppler-utils ghostscript fonts-dejavu-core make latexmk texlive-binaries texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-pictures texlive-bibtex-extra libyaml-perl libfile-which-perl perl texlive-publishers texlive-lang-portuguese xdg-utils zathura"; \
+  RETRIES=10; \
+  apt-get update -o Acquire::Retries=$RETRIES; \
+  if ! apt-get install -y --no-install-recommends -o Acquire::Retries=$RETRIES $PACKAGES; then \
+    echo 'Primary apt install failed — retrying with --fix-missing'; \
+    apt-get update -o Acquire::Retries=$RETRIES; \
+    if ! apt-get install -y --no-install-recommends --fix-missing -o Acquire::Retries=$RETRIES $PACKAGES; then \
+      echo 'Retry failed — switching mirror to ftp.debian.org and retrying'; \
+            # Ensure security entries point to the security mirror, then switch main mirror
+            grep -Rls 'deb.debian.org' /etc/apt || true; \
+            grep -Rls 'deb.debian.org' /etc/apt | xargs -r sed -i.bak -E 's|https?://deb.debian.org/debian-security|http://security.debian.org/debian-security|g' || true; \
+            grep -Rls 'deb.debian.org' /etc/apt | xargs -r sed -i.bak -E 's|https?://deb.debian.org/debian|http://ftp.debian.org/debian|g' || true; \
+      apt-get update -o Acquire::Retries=$RETRIES; \
+      apt-get install -y --no-install-recommends --fix-missing -o Acquire::Retries=$RETRIES $PACKAGES; \
+    fi; \
+  fi; \
+  apt-get clean; \
+  rm -rf /var/lib/apt/lists/*
 
 # Install cpanminus (cpanm) if not available, then install LaTeX::Indent and deps
 RUN if ! command -v cpanm >/dev/null 2>&1; then \

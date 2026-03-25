@@ -11,7 +11,7 @@
                 "latex-workshop.latex.autoBuild.run": "onFileChange",
                 "latex-workshop.latex.watch.files.usePolling": true,
                 "latex-workshop.latexindent.path": "/usr/local/bin/latexindent",
-                "latex-workshop.formatting.latexindent.path": "/usr/local/bin/latexindent",
+                "latex-workshop.formatting.latexindent.path": "/usr/local/bin/latexindent"
             },
             "extensions": [
                 "james-yu.latex-workshop"
