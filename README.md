@@ -41,9 +41,7 @@ Para adicionar um novo modelo para universidade/programa:
 
 2. Adicione um `main.tex`, uma pasta mínima `sections/`, `images/` e `references.bib` (se necessário).
 
-3. Adicione um `README.md` curto na pasta do modelo descrevendo pacotes LaTeX necessários e passos de compilação.
-
-4. Siga as orientações em [CONTRIBUTING.md](CONTRIBUTING.md) e abra um pull request.
+3. Siga as orientações em [CONTRIBUTING.md](CONTRIBUTING.md) e abra um pull request.
 
 ## Desenvolvimento & DevContainers
 
