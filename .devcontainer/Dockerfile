@@ -1,25 +1,9 @@
-FROM mcr.microsoft.com/vscode/devcontainers/base:0
-
-ARG DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-    git \
-    curl \
-    sudo \
-    ca-certificates \
-    fzf \
-    ripgrep \
-    build-essential \
-  && rm -rf /var/lib/apt/lists/*
-
-USER vscode
 FROM mcr.microsoft.com/vscode/devcontainers/base:debian
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN set -eux; \
-  PACKAGES="build-essential git wget ca-certificates poppler-utils ghostscript fonts-dejavu-core make latexmk texlive-binaries texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-pictures texlive-bibtex-extra libyaml-perl libfile-which-perl perl texlive-publishers texlive-lang-portuguese xdg-utils zathura"; \
+  PACKAGES="build-essential git wget ca-certificates poppler-utils ghostscript fonts-dejavu-core make latexmk texlive-binaries texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-pictures texlive-bibtex-extra libyaml-perl libfile-which-perl perl texlive-publishers texlive-lang-portuguese xdg-utils zathura fzf ripgrep"; \
   RETRIES=10; \
   apt-get update -o Acquire::Retries=$RETRIES; \
   if ! apt-get install -y --no-install-recommends -o Acquire::Retries=$RETRIES $PACKAGES; then \
