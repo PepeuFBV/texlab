@@ -1,4 +1,18 @@
 {
+    "name": "TexAcademy Dev Container",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": []
+        }
+    },
+    "settings": {},
+    "postCreateCommand": "echo 'Devcontainer ready'",
+    "remoteUser": "vscode"
+}
+{
     "name": "TeX Dev Container",
     "build": {
         "dockerfile": "Dockerfile",
