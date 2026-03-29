@@ -59,11 +59,12 @@ _ensure_repo_root() {
     [ -n "${_REPO_ROOT:-}" ] && return 0
     local ref="${TEXACADEMY_REF:-main}"
     local archive="$_INSTALL_TMPDIR/repo.tar.gz"
-    echo "Downloading template files from GitHub (branch: $ref)..."
-    curl -fsSL "https://github.com/PepeuFBV/texacademy/archive/refs/heads/${ref}.tar.gz" \
-        -o "$archive"
-    tar -xzf "$archive" -C "$_INSTALL_TMPDIR"
-    _REPO_ROOT="$_INSTALL_TMPDIR/texacademy-${ref}"
+    local archive_url="${TEXACADEMY_ARCHIVE_URL:-https://github.com/PepeuFBV/texacademy/archive/refs/heads/${ref}.tar.gz}"
+    echo "Downloading template files..."
+    curl -fsSL "$archive_url" -o "$archive"
+    mkdir -p "$_INSTALL_TMPDIR/repo"
+    tar -xzf "$archive" -C "$_INSTALL_TMPDIR/repo" --strip-components=1
+    _REPO_ROOT="$_INSTALL_TMPDIR/repo"
 }
 
 install_fzf() {
