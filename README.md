@@ -1,9 +1,6 @@
 # TexAcademy
 
 [![Open in Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?repository=PepeuFBV/texacademy&ref=main&devcontainer_path=.devcontainer)
-[![Test Install Script](https://github.com/PepeuFBV/texacademy/actions/workflows/test-install-script.yml/badge.svg)](https://github.com/PepeuFBV/texacademy/actions/workflows/test-install-script.yml)
-[![Validate Templates](https://github.com/PepeuFBV/texacademy/actions/workflows/validate-templates.yml/badge.svg)](https://github.com/PepeuFBV/texacademy/actions/workflows/validate-templates.yml)
-[![Devcontainer CI](https://github.com/PepeuFBV/texacademy/actions/workflows/devcontainer-ci.yml/badge.svg)](https://github.com/PepeuFBV/texacademy/actions/workflows/devcontainer-ci.yml)
 
 TexAcademy é uma coleção de setups reproduzíveis para compilação LaTeX, templates e "modelos" de ambiente direcionados a diferentes universidades e programas (por exemplo: PIBIC, PIC, PIBITI, relatórios de graduação, teses e outros formatos institucionais).
 
