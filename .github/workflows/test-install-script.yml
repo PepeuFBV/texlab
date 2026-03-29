@@ -7,23 +7,25 @@ on:
       - 'scripts/**'
       - 'templates.json'
       - 'templates/**'
+      - '.devcontainer/**'
 
 jobs:
   test:
     name: Install Script Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install fzf
-        run: sudo apt-get update && sudo apt-get install -y fzf
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq fzf
 
       - name: Make scripts executable
         run: chmod +x scripts/*.sh
 
+      # ── Syntax ──────────────────────────────────────────────────────────────
       - name: Syntax check
         run: |
           bash -n scripts/install.sh
@@ -31,17 +33,17 @@ jobs:
           bash -n scripts/validate_templates.sh
           echo "Syntax OK"
 
-      - name: Test non-interactive chooser returns first template
+      # ── choose_template.sh ──────────────────────────────────────────────────
+      - name: Chooser — non-interactive returns first template
         run: |
           selected=$(./scripts/choose_template.sh </dev/null)
           echo "Selected: $selected"
           [ -n "$selected" ] || { echo "ERROR: chooser produced no output"; exit 1; }
-          [ -d "templates/$selected" ] || { echo "ERROR: directory templates/$selected not found"; exit 1; }
+          [ -d "templates/$selected" ] || { echo "ERROR: templates/$selected not found"; exit 1; }
           echo "OK: templates/$selected exists"
 
-      - name: Test chooser with a randomly picked template
+      - name: Chooser — every path in templates.json maps to an existing directory
         run: |
-          # parse all leaf paths from templates.json using pure bash (same parser as chooser)
           in_programs=0; in_versions=0
           root_path=""; prog_path=""; ver_path=""
           arr_stack=(); json_paths=()
@@ -70,19 +72,88 @@ jobs:
 
           count="${#json_paths[@]}"
           [ "$count" -gt 0 ] || { echo "ERROR: no paths parsed from templates.json"; exit 1; }
+          failed=0
+          for p in "${json_paths[@]}"; do
+            if [ -d "templates/$p" ]; then
+              echo "OK: templates/$p"
+            else
+              echo "ERROR: templates/$p not found"
+              failed=1
+            fi
+          done
+          [ "$failed" -eq 0 ] || exit 1
 
-          # pick a random template
-          idx=$(( RANDOM % count ))
-          selected="${json_paths[$idx]}"
-          echo "Randomly selected ($((idx+1)) of $count): $selected"
-          [ -d "templates/$selected" ] || { echo "ERROR: directory templates/$selected not found"; exit 1; }
-          echo "OK: templates/$selected exists"
-
-      - name: Test install.sh non-interactively (full flow)
+      # ── install.sh — local (normal bash script/run) mode ───────────────────
+      - name: install.sh — local mode, no devcontainer
         run: |
-          out=$(./scripts/install.sh </dev/null 2>&1)
-          echo "$out"
-          # installer must output a template path (root/program/version pattern)
-          echo "$out" | grep -qE '^[a-z][a-z0-9_-]*/[a-z][a-z0-9_-]*/[a-z][a-z0-9_-]*$' \
-            || { echo "ERROR: installer output did not contain a valid template path"; exit 1; }
-          echo "install.sh output OK"
+          test_dir=$(mktemp -d)
+          cd "$test_dir"
+          # pipe provides: paper name on stdin; confirm defaults to Y but we
+          # send "n" for devcontainer so we can test that path separately
+          printf "ci-test-paper\nn\n" | bash "$GITHUB_WORKSPACE/scripts/install.sh"
+
+          [ -d "$test_dir/ci-test-paper" ] \
+            || { echo "ERROR: project directory not created"; exit 1; }
+          [ -f "$test_dir/ci-test-paper/main.tex" ] \
+            || { echo "ERROR: main.tex missing from project directory"; exit 1; }
+          [ ! -d "$test_dir/ci-test-paper/.devcontainer" ] \
+            || { echo "ERROR: .devcontainer should not be present (answered n)"; exit 1; }
+          echo "OK: local mode, no devcontainer"
+
+      - name: install.sh — local mode, with devcontainer
+        run: |
+          test_dir=$(mktemp -d)
+          cd "$test_dir"
+          printf "ci-test-paper-dc\ny\n" | bash "$GITHUB_WORKSPACE/scripts/install.sh"
+
+          [ -d "$test_dir/ci-test-paper-dc" ] \
+            || { echo "ERROR: project directory not created"; exit 1; }
+          [ -f "$test_dir/ci-test-paper-dc/main.tex" ] \
+            || { echo "ERROR: main.tex missing from project directory"; exit 1; }
+          [ -d "$test_dir/ci-test-paper-dc/.devcontainer" ] \
+            || { echo "ERROR: .devcontainer missing (answered y)"; exit 1; }
+          [ -f "$test_dir/ci-test-paper-dc/.devcontainer/devcontainer.json" ] \
+            || { echo "ERROR: devcontainer.json not found"; exit 1; }
+          echo "OK: local mode, with devcontainer"
+
+      - name: install.sh — rejects empty paper name
+        run: |
+          test_dir=$(mktemp -d)
+          cd "$test_dir"
+          printf "\n" | bash "$GITHUB_WORKSPACE/scripts/install.sh" && exit 1 || true
+          echo "OK: empty paper name rejected"
+
+      - name: install.sh — rejects existing directory
+        run: |
+          test_dir=$(mktemp -d)
+          mkdir "$test_dir/existing-paper"
+          cd "$test_dir"
+          printf "existing-paper\n" | bash "$GITHUB_WORKSPACE/scripts/install.sh" && exit 1 || true
+          echo "OK: existing directory rejected"
+
+      # ── install.sh — pipe mode (simulates bash <(curl ...)) ────────────────
+      - name: install.sh — pipe mode simulation
+        run: |
+          # Build a local archive of the workspace so _ensure_repo_root doesn't
+          # need to reach GitHub and works against the current branch's content.
+          tar -czf /tmp/texacademy-ci.tar.gz -C "$GITHUB_WORKSPACE" .
+
+          test_dir=$(mktemp -d)
+          cd "$test_dir"
+
+          # bash <(cat ...) makes BASH_SOURCE[0] a /proc/self/fd path,
+          # triggering the pipe-mode branch in install.sh.
+          # TEXACADEMY_RAW_BASE: serves choose_template.sh and templates.json via file://
+          # TEXACADEMY_ARCHIVE_URL: serves the repo archive via file://
+          TEXACADEMY_RAW_BASE="file://$GITHUB_WORKSPACE" \
+          TEXACADEMY_ARCHIVE_URL="file:///tmp/texacademy-ci.tar.gz" \
+            bash <(cat "$GITHUB_WORKSPACE/scripts/install.sh") \
+            <<< "pipe-mode-paper"
+
+          [ -d "$test_dir/pipe-mode-paper" ] \
+            || { echo "ERROR: project directory not created in pipe mode"; exit 1; }
+          [ -f "$test_dir/pipe-mode-paper/main.tex" ] \
+            || { echo "ERROR: main.tex missing in pipe mode"; exit 1; }
+          [ -d "$test_dir/pipe-mode-paper/.devcontainer" ] \
+            || { echo "ERROR: .devcontainer missing in pipe mode (confirm defaults to Y)"; exit 1; }
+          echo "OK: pipe mode"
