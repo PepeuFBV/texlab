@@ -20,7 +20,7 @@ confirm() {
             *) return 1 ;;
         esac
     else
-        # Not interactive: use default
+        # not interactive: use default
         if [ "$default" = "Y" ] || [ "$default" = "y" ]; then
             return 0
         else
@@ -49,13 +49,13 @@ chooseTemplate() {
 }
 
 install_fzf() {
-    # No-op if already installed
+    # no-op if already installed
     if command -v fzf >/dev/null 2>&1; then
         echo "fzf already installed"
         return 0
     fi
 
-    # Prefer non-root git-based install (works in CI/devcontainer without sudo)
+    # prefer non-root git-based install (works in CI/devcontainer without sudo)
     if command -v git >/dev/null 2>&1; then
         if [ ! -d "$HOME/.fzf" ]; then
             if git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"; then
@@ -113,7 +113,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
         echo "Installing complete setup automatically..."
     fi
 
-    # Optionally install fzf for improved fuzzy search
+    # optionally install fzf for improved fuzzy search
     if [ -t 0 ]; then
         if confirm "Install fzf for improved fuzzy search? (recommended)" N; then
             if install_fzf; then

@@ -22,7 +22,7 @@ RUN set -eux; \
   apt-get clean; \
   rm -rf /var/lib/apt/lists/*
 
-# Install cpanminus (cpanm) if not available, then install LaTeX::Indent and deps
+# install cpanminus (cpanm) if not available, then install LaTeX::Indent and deps
 RUN if ! command -v cpanm >/dev/null 2>&1; then \
       wget -qO /usr/local/bin/cpanm https://cpanmin.us && chmod +x /usr/local/bin/cpanm; \
     fi \

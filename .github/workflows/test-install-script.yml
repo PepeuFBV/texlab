@@ -1,0 +1,93 @@
+name: Test Installation Script
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - 'templates.json'
+      - 'templates/**'
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'templates.json'
+      - 'templates/**'
+
+jobs:
+  test:
+    name: Install Script Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install fzf
+        run: sudo apt-get update && sudo apt-get install -y fzf
+
+      - name: Make scripts executable
+        run: chmod +x scripts/*.sh
+
+      - name: Syntax check
+        run: |
+          bash -n scripts/install.sh
+          bash -n scripts/choose_template.sh
+          bash -n scripts/validate_templates.sh
+          echo "Syntax OK"
+
+      - name: Test non-interactive chooser returns first template
+        run: |
+          selected=$(./scripts/choose_template.sh </dev/null)
+          echo "Selected: $selected"
+          [ -n "$selected" ] || { echo "ERROR: chooser produced no output"; exit 1; }
+          [ -d "templates/$selected" ] || { echo "ERROR: directory templates/$selected not found"; exit 1; }
+          echo "OK: templates/$selected exists"
+
+      - name: Test chooser with a randomly picked template
+        run: |
+          # parse all leaf paths from templates.json using pure bash (same parser as chooser)
+          in_programs=0; in_versions=0
+          root_path=""; prog_path=""; ver_path=""
+          arr_stack=(); json_paths=()
+          while IFS= read -r line; do
+            if [[ "$line" == *'"programs"'* && "$line" == *'['* ]]; then arr_stack+=(programs); in_programs=$((in_programs+1)); continue; fi
+            if [[ "$line" == *'"versions"'* && "$line" == *'['* ]]; then arr_stack+=(versions); in_versions=$((in_versions+1)); continue; fi
+            if [[ "$line" == *']'* ]]; then
+              if (( ${#arr_stack[@]} > 0 )); then
+                last_idx=$(( ${#arr_stack[@]} - 1 )); arrkey="${arr_stack[$last_idx]}"
+                unset 'arr_stack[$last_idx]'; arr_stack=( "${arr_stack[@]}" )
+                [[ "$arrkey" == "programs" ]] && in_programs=$((in_programs-1))
+                [[ "$arrkey" == "versions" ]] && in_versions=$((in_versions-1))
+              fi; continue
+            fi
+            if [[ $line =~ \"path\"[[:space:]]*:[[:space:]]*\"([^\"]*)\" ]]; then
+              val="${BASH_REMATCH[1]%/}"
+              if (( in_versions > 0 )); then ver_path="$val"
+              elif (( in_programs > 0 )); then prog_path="$val"
+              else root_path="${root_path:-$val}"; fi
+              if [ -n "${root_path:-}" ] && [ -n "${prog_path:-}" ] && [ -n "${ver_path:-}" ]; then
+                json_paths+=("$root_path/$prog_path/$ver_path")
+                ver_path=""
+              fi
+            fi
+          done < templates.json
+
+          count="${#json_paths[@]}"
+          [ "$count" -gt 0 ] || { echo "ERROR: no paths parsed from templates.json"; exit 1; }
+
+          # pick a random template
+          idx=$(( RANDOM % count ))
+          selected="${json_paths[$idx]}"
+          echo "Randomly selected ($((idx+1)) of $count): $selected"
+          [ -d "templates/$selected" ] || { echo "ERROR: directory templates/$selected not found"; exit 1; }
+          echo "OK: templates/$selected exists"
+
+      - name: Test install.sh non-interactively (full flow)
+        run: |
+          out=$(./scripts/install.sh </dev/null 2>&1)
+          echo "$out"
+          # installer must output a template path (root/program/version pattern)
+          echo "$out" | grep -qE '^[a-z][a-z0-9_-]*/[a-z][a-z0-9_-]*/[a-z][a-z0-9_-]*$' \
+            || { echo "ERROR: installer output did not contain a valid template path"; exit 1; }
+          echo "install.sh output OK"
