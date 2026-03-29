@@ -8,6 +8,7 @@ confirm() {
     default="${2:-Y}"
 
     if [ -t 0 ]; then
+        # interactive TTY: show prompt with default hint
         if [ "$default" = "Y" ] || [ "$default" = "y" ]; then
             read -r -p "$prompt [Y/n] " reply
             reply="${reply:-Y}"
@@ -15,18 +16,19 @@ confirm() {
             read -r -p "$prompt [y/N] " reply
             reply="${reply:-N}"
         fi
-        case "$reply" in
-            [Yy]*) return 0 ;;
-            *) return 1 ;;
-        esac
     else
-        # not interactive: use default
-        if [ "$default" = "Y" ] || [ "$default" = "y" ]; then
-            return 0
+        # piped stdin or EOF: read silently, use default if empty or EOF
+        if IFS= read -r reply; then
+            reply="${reply:-$default}"
         else
-            return 1
+            reply="$default"
         fi
     fi
+
+    case "$reply" in
+        [Yy]*) return 0 ;;
+        *) return 1 ;;
+    esac
 }
 
 _INSTALL_TMPDIR=""
