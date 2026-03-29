@@ -29,11 +29,41 @@ confirm() {
     fi
 }
 
+# Global state for pipe-mode helpers
+_INSTALL_TMPDIR=""
+_SCRIPTS_DIR=""
+
+# Resolve the directory containing install.sh's sibling scripts and set
+# _SCRIPTS_DIR.  Do NOT call this in a subshell — it sets global variables
+# and registers a cleanup trap.
+# When run via `bash <(curl ...)` BASH_SOURCE[0] is a /proc/self/fd path,
+# not a real file; in that case we download the helpers from GitHub.
+_resolve_scripts_dir() {
+    local src="${BASH_SOURCE[0]:-$0}"
+    if [[ -f "$src" && "$src" != /proc/self/fd/* && "$src" != /dev/stdin ]]; then
+        _SCRIPTS_DIR="$(cd "$(dirname "$src")" && pwd)"
+        return 0
+    fi
+    # Running via pipe / process substitution — download helpers to a temp dir.
+    if [ -n "${_INSTALL_TMPDIR:-}" ]; then
+        _SCRIPTS_DIR="$_INSTALL_TMPDIR/scripts"
+        return 0
+    fi
+    _INSTALL_TMPDIR="$(mktemp -d)"
+    trap 'rm -rf "$_INSTALL_TMPDIR"' EXIT INT TERM
+    local base="${TEXACADEMY_RAW_BASE:-https://raw.githubusercontent.com/PepeuFBV/texacademy/main}"
+    mkdir -p "$_INSTALL_TMPDIR/scripts"
+    curl -fsSL "$base/scripts/choose_template.sh" -o "$_INSTALL_TMPDIR/scripts/choose_template.sh"
+    curl -fsSL "$base/templates.json" -o "$_INSTALL_TMPDIR/templates.json"
+    chmod +x "$_INSTALL_TMPDIR/scripts/choose_template.sh"
+    _SCRIPTS_DIR="$_INSTALL_TMPDIR/scripts"
+}
+
 chooseTemplate() {
     local template_dir="$1"
-    local script_dir chooser selected
-    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    chooser="$script_dir/choose_template.sh"
+    local chooser selected
+    _resolve_scripts_dir
+    chooser="$_SCRIPTS_DIR/choose_template.sh"
     if [ -x "$chooser" ]; then
         selected="$("$chooser")" || return $?
         printf '%s\n' "$selected"
@@ -125,7 +155,8 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     fi
 
     # first, choose template (interactive fuzzy search)
-    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    _resolve_scripts_dir
+    script_dir="$_SCRIPTS_DIR"
     tmpfile="$(mktemp)"
     CHOOSER_OUTPUT="$tmpfile" bash "$script_dir/choose_template.sh" || { echo "Template selection aborted or failed." >&2; rm -f "$tmpfile"; exit 1; }
     selected_template="$(<"$tmpfile")"
