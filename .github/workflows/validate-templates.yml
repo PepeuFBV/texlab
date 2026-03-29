@@ -1,12 +1,8 @@
 name: Validate Templates
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'templates/**'
-      - 'templates.json'
   pull_request:
+    branches: [main]
     paths:
       - 'templates/**'
       - 'templates.json'

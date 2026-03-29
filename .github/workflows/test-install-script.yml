@@ -1,13 +1,8 @@
 name: Test Installation Script
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'scripts/**'
-      - 'templates.json'
-      - 'templates/**'
   pull_request:
+    branches: [main]
     paths:
       - 'scripts/**'
       - 'templates.json'
