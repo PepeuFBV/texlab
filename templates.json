@@ -1,0 +1,23 @@
+{
+    "id": "UFRPE",
+    "name": "Universidade Federal Rural de Pernambuco",
+    "url": "https://www.ufrpe.br/",
+    "path": "ufrpe/",
+    "description": "A Universidade Federal Rural de Pernambuco (UFRPE) é uma instituição de ensino superior pública localizada em Recife, Pernambuco, Brasil.",
+    "programs": [
+        {
+            "id": "PIBIC",
+            "name": "Programa Institucional de Bolsas de Iniciação Científica (PIBIC)",
+            "description": "O PIBIC é um programa que oferece bolsas para estudantes de graduação desenvolverem projetos de pesquisa científica sob a orientação de um professor pesquisador da UFRPE.",
+            "path": "pibic/",
+            "versions": [
+                {
+                    "id": "final",
+                    "name": "Template de Relatório final PIBIC",
+                    "description": "Modelo de documento para elaboração de relatório final de pesquisa no âmbito do PIBIC.",
+                    "path": "final/"
+                }
+            ]
+        }
+    ]
+}

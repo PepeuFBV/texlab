@@ -1,0 +1,28 @@
+name: Validate Templates
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'templates/**'
+      - 'templates.json'
+  pull_request:
+    paths:
+      - 'templates/**'
+      - 'templates.json'
+
+jobs:
+  validate:
+    name: Templates Registry Consistency
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Make scripts executable
+        run: chmod +x scripts/*.sh
+
+      - name: Validate templates.json against templates/ directory
+        run: bash scripts/validate_templates.sh

@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:debian
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN set -eux; \
-  PACKAGES="build-essential git wget ca-certificates poppler-utils ghostscript fonts-dejavu-core make latexmk texlive-binaries texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-pictures texlive-bibtex-extra libyaml-perl libfile-which-perl perl texlive-publishers texlive-lang-portuguese xdg-utils zathura"; \
+  PACKAGES="build-essential git wget ca-certificates poppler-utils ghostscript fonts-dejavu-core make latexmk texlive-binaries texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-pictures texlive-bibtex-extra libyaml-perl libfile-which-perl perl texlive-publishers texlive-lang-portuguese xdg-utils zathura fzf ripgrep"; \
   RETRIES=10; \
   apt-get update -o Acquire::Retries=$RETRIES; \
   if ! apt-get install -y --no-install-recommends -o Acquire::Retries=$RETRIES $PACKAGES; then \
@@ -22,7 +22,7 @@ RUN set -eux; \
   apt-get clean; \
   rm -rf /var/lib/apt/lists/*
 
-# Install cpanminus (cpanm) if not available, then install LaTeX::Indent and deps
+# install cpanminus (cpanm) if not available, then install LaTeX::Indent and deps
 RUN if ! command -v cpanm >/dev/null 2>&1; then \
       wget -qO /usr/local/bin/cpanm https://cpanmin.us && chmod +x /usr/local/bin/cpanm; \
     fi \
