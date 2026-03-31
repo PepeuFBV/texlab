@@ -36,12 +36,12 @@ bash <(curl -fsSL https://raw.githubusercontent.com/PepeuFBV/texacademy/main/scr
 
 ## Planejamento futuro
 
-- Adicionar mais templates para diferentes instituições e programas.
+- ~~Adicionar mais templates para diferentes instituições e programas.~~ ✅ Implementado (UFRPE PIBITI final, PIBIC parcial)
 - ~~CI/CD para validar compilações de templates adicionados e PRs.~~ ✅ Implementado
-- Template para mensagens de PRs para garantir que novos templates sigam o formato esperado.
-- Versionamento automático para lançamentos de templates estáveis.
+- ~~Template para mensagens de PRs para garantir que novos templates sigam o formato esperado.~~ ✅ Implementado
+- ~~Versionamento automático para lançamentos de templates estáveis.~~ ✅ Implementado
 - ~~Script para extração de templates.~~ ✅ Implementado (`scripts/install.sh`)
-- Guia de estilo para templates (estrutura de pastas, convenções de nomenclatura, etc.).
+- ~~Guia de estilo para templates (estrutura de pastas, convenções de nomenclatura, etc.).~~ ✅ Implementado (`STYLE_GUIDE.md`)
 
 ## Contato / Mantenedores
 
