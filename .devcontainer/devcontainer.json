@@ -23,6 +23,6 @@
         ".devcontainer/.env.resources"
     ],
     "postCreateCommand": "(latexindent --version || latexindent.pl --version) > /tmp/devcontainer-latexindent.log 2>&1 || true",
-    "postStartCommand": ".devcontainer/start-watchers.sh || true",
+    "postStartCommand": "bash .devcontainer/start-watchers.sh || true",
     "remoteUser": "vscode"
 }
