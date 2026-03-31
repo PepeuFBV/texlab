@@ -1,0 +1,89 @@
+name: 🐛 Relatar um bug
+description: Reporte um problema ou comportamento inesperado
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por reportar um problema! Preencha os detalhes abaixo para nos ajudar a resolver.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do problema
+      description: Descreva claramente o problema encontrado
+      placeholder: O que aconteceu de errado?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento esperado
+      description: O que você esperava que acontecesse?
+      placeholder: Descreva o comportamento esperado
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para reproduzir
+      description: Como reproduzir o problema?
+      placeholder: |
+        1. Faça isso...
+        2. Depois isso...
+        3. O erro ocorre
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Componente afetado
+      description: Qual parte do projeto é afetada?
+      options:
+        - Desconhecido
+        - DevContainer
+        - Script de instalação
+        - Validação de templates
+        - Documentação
+        - Template LaTeX
+        - CI/CD
+        - Outro
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Sistema Operacional
+      description: Em qual SO o problema ocorre? (Linux, macOS, Windows/WSL, etc.)
+      placeholder: "ex: Linux (Debian 12), macOS 14, Windows 11 com WSL2"
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Informações do ambiente
+      description: "Versões relevantes (opcional)"
+      placeholder: |
+        - Node/Python/LaTeX version (se relevante)
+        - VS Code version
+        - Git version
+        - Docker/DevContainer version
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs ou saída de erro
+      description: Cole logs, stack traces ou mensagens de erro
+      render: bash
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Verifiquei se já existe issue aberta sobre este problema
+          required: true
+        - label: Tentei replicar o problema com as versões mais recentes
+        - label: Incluí logs e passos para reproduzir

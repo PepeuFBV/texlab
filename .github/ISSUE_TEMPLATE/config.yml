@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentação
+    url: https://github.com/PepeuFBV/texacademy/blob/main/README.md
+    about: Leia o README e guias
+  - name: Discussões
+    url: https://github.com/PepeuFBV/texacademy/discussions
+    about: Converse com a comunidade nas discussões
+  - name: CONTRIBUTING
+    url: https://github.com/PepeuFBV/texacademy/blob/main/CONTRIBUTING.md
+    about: Saiba como contribuir

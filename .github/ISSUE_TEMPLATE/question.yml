@@ -1,0 +1,61 @@
+name: ❓ Dúvida/Discussão
+description: Faça uma pergunta ou inicie uma discussão sobre o projeto
+title: "[QUESTION] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tem uma dúvida sobre como usar o TexAcademy? Quer discutir algo sobre o projeto?
+        
+        **Dica**: Se o seu problema não se encaixa nas outras categorias, este é o local certo!
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Sua pergunta/dúvida
+      description: Descreva sua pergunta da forma mais clara possível
+      placeholder: Estou tentando... como posso...?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto
+      description: |
+        Forneça contexto sobre o que você estava tentando fazer
+        - Qual template você está usando?
+        - Qual é seu ambiente (SO, VS Code version, etc)?
+        - Quais passos você seguiu?
+      placeholder: |
+        Estou usando: Ubuntu 22.04
+        Template: UFRPE PIBIC Final
+        Tentei: ...
+
+  - type: textarea
+    id: attempts
+    attributes:
+      label: O que você já tentou?
+      description: Quais soluções você já experimentou?
+      placeholder: |
+        - Tentei...
+        - Verifiquei em...
+        - Limpei...
+
+  - type: textarea
+    id: docs
+    attributes:
+      label: Documentação consultada
+      description: Você consultou a documentação? Qual parte?
+      placeholder: |
+        Li: README.md, DEVCONTAINER.md
+        Mas não encontrei informações sobre...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Consultei o README.md e CONTRIBUTING.md
+        - label: Procurei por issues/discussões similares
