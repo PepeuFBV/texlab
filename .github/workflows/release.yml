@@ -1,0 +1,88 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    name: Create Release PR
+    runs-on: ubuntu-latest
+
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
+
+    steps:
+      - name: Run release-please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  upload-templates:
+    name: Upload Templates Archive
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create templates archive
+        run: |
+          VERSION="${{ needs.release-please.outputs.version }}"
+          zip -r "templates-${VERSION}.zip" templates/ templates.json
+          tar -czf "templates-${VERSION}.tar.gz" templates/ templates.json
+
+      - name: Upload archives to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.release-please.outputs.tag_name }}
+          files: |
+            templates-${{ needs.release-please.outputs.version }}.zip
+            templates-${{ needs.release-please.outputs.version }}.tar.gz
+
+  update-floating-tags:
+    name: Update Floating Tags (vX and vX.Y)
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update floating vX and vX.Y tags
+        env:
+          TAG: ${{ needs.release-please.outputs.tag_name }}
+        run: |
+          # TAG is e.g. "v1.2.3" — derive the floating aliases
+          MAJOR="${TAG%%.*}"                      # "v1"
+          MINOR="${TAG%.*}"                       # "v1.2"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Resolve the commit the exact tag points to
+          COMMIT="$(git rev-list -n 1 "$TAG")"
+
+          # Force-update (or create) the floating tags locally and push them
+          git tag -f "$MAJOR" "$COMMIT"
+          git tag -f "$MINOR" "$COMMIT"
+
+          git push origin "$MAJOR" --force
+          git push origin "$MINOR" --force
+
+          echo "Updated floating tags: $MAJOR → $COMMIT"
+          echo "Updated floating tags: $MINOR → $COMMIT"
