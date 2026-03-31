@@ -2,6 +2,9 @@
 
  ## Adicionando um novo template
 
+ > [!NOTE]
+ > Consulte o [STYLE_GUIDE.md](STYLE_GUIDE.md) para as convenções completas de nomenclatura, estrutura e qualidade esperadas de cada template.
+
  ### Estrutura de diretórios
 
  Cada template deve seguir o padrão:

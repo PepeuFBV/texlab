@@ -28,6 +28,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/PepeuFBV/texacademy/main/scr
 ## Documentação
 
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — Como adicionar novos templates, convenções de commits e checklist para PRs.
+- **[STYLE_GUIDE.md](STYLE_GUIDE.md)** — Estrutura de pastas, convenções de nomenclatura e qualidade mínima para templates.
 - **[DEVCONTAINER.md](.devcontainer/DEVCONTAINER.md)** — Configuração e uso de DevContainers para compilação LaTeX local.
 - **[CODESPACES.md](.devcontainer/CODESPACES.md)** — Como usar GitHub Codespaces para desenvolvimento na nuvem.
 - **[CI.md](.github/workflows/CI.md)** — Pipelines de qualidade (validação de templates, CI/CD).
