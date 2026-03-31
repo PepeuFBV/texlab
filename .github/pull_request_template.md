@@ -21,7 +21,6 @@
 - [ ] Entrada adicionada em `templates.json` com `id`, `name`, `description` e `path` corretos.
 - [ ] `bash scripts/validate_templates.sh` passa localmente (sem erros).
 - [ ] Documento compila sem erros com `latexmk -pdf -cd -interaction=nonstopmode main.tex`.
-- [ ] PDF de exemplo gerado (ou link para versão compilada) incluído/referenciado.
 - [ ] Seções de placeholder usam `\lipsum` ou texto de exemplo claro, não conteúdo real de autor.
 
 ## Checklist geral
