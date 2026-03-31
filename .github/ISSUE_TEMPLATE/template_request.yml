@@ -1,0 +1,110 @@
+name: 📋 Solicitar novo template
+description: Solicite um novo template LaTeX para sua instituição/programa
+title: "[TEMPLATE REQUEST] "
+labels: ["template-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Quer adicionar um novo template para sua instituição ou programa? Ótimo! 
+        
+        Preencha as informações abaixo. Para contribuir diretamente, veja [CONTRIBUTING.md](https://github.com/PepeuFBV/texacademy/blob/main/CONTRIBUTING.md).
+
+  - type: input
+    id: institution
+    attributes:
+      label: Instituição
+      description: Nome completo da universidade ou instituição
+      placeholder: "ex: Universidade de São Paulo"
+    validations:
+      required: true
+
+  - type: input
+    id: institution_abbr
+    attributes:
+      label: Sigla da instituição
+      description: Abreviação que será usada como nome da pasta (minúsculas, ex: usp)
+      placeholder: "ex: usp"
+    validations:
+      required: true
+
+  - type: input
+    id: program
+    attributes:
+      label: Programa/Tipo de trabalho
+      description: Ex: PIBIC, PIC, TCC, Dissertação, Relatório, etc.
+      placeholder: "ex: Trabalho de Conclusão de Curso (TCC)"
+    validations:
+      required: true
+
+  - type: input
+    id: program_abbr
+    attributes:
+      label: Sigla do programa
+      description: Abreviação para o programa (minúsculas, ex: tcc)
+      placeholder: "ex: tcc"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: doc_type
+    attributes:
+      label: Tipo de documento
+      description: Qual tipo de documento el template será?
+      options:
+        - Relatório (parcial ou final)
+        - TCC (Trabalho de Conclusão)
+        - Dissertação
+        - Tese
+        - Proposta/Projeto
+        - Artigo/Paper
+        - Outro
+    validations:
+      required: true
+
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requisitos/Especificações
+      description: Há requisitos específicos para esse template? (formatação, seções obrigatórias, etc.)
+      placeholder: |
+        - Deve incluir seções: Introdução, Objetivos, Resultados, Conclusão
+        - Margens: 2.5cm (esquerda), 2.5cm (direita), 2cm (superior), 2cm (inferior)
+        - Espaçamento: 1.5 entre linhas
+        - Capa com campos específicos...
+
+  - type: input
+    id: institution_url
+    attributes:
+      label: URL da instituição
+      description: Link para o site da instituição
+      placeholder: "https://www.usp.br"
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Referência/Exemplo
+      description: |
+        Você tem um exemplo (PDF, link para manual, etc.) que mostra como deveria ser?
+        Cole o link ou descreva a estrutura esperada.
+      placeholder: |
+        Link para manual: https://...
+        Ou: "A estrutura segue o manual da ABNT com as seguintes seções obrigatórias..."
+
+  - type: textarea
+    id: contact
+    attributes:
+      label: Como podemos entrar em contato?
+      description: Você gostaria de colaborar na criação do template? Como podemos ajudar?
+      placeholder: |
+        Posso contribuir com: (criação do template, validação, etc.)
+        Contato: (email, username do GitHub, etc.)
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Esta instituição ainda não tem template no repositório
+          required: true
+        - label: Verifiquei issues/PRs abertos para não duplicar requisições

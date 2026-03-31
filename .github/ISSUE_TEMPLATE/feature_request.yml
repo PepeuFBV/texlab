@@ -1,0 +1,74 @@
+name: ✨ Sugestão de feature
+description: Sugira uma nova funcionalidade ou melhoria
+title: "[FEATURE] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por sugerir uma melhoria! Descreva sua ideia da melhor forma possível.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Qual problema essa feature resolve?
+      description: |
+        Descreva qual é o problema atual ou limitação que esta feature resolveria.
+        Seja o mais específico possível sobre o contexto de uso.
+      placeholder: |
+        Exemplo: É difícil encontrar templates para minhas necessidades porque...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Descrição da solução proposta
+      description: Descreva como você imagina essa feature funcionando
+      placeholder: |
+        Gostaria que...
+        Isso permitiria que...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
+      description: Você pensou em outras formas de resolver isso?
+      placeholder: |
+        - Alternativa 1...
+        - Alternativa 2...
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Categoria
+      description: Qual categoria essa feature se encaixa?
+      options:
+        - Templates (novos templates/instituições)
+        - Documentação
+        - DevContainer/Ambiente
+        - Scripts de automação
+        - CI/CD
+        - Tooling/Ferramentas
+        - Website/Interface
+        - Outro
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto adicional
+      description: Qualquer informação adicional que ajude a entender a sugestão
+      placeholder: Links, exemplos, screenshots, etc.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Verifiquei se já existe issue ou PR aberta sobre essa feature
+          required: true
+        - label: Revisei a documentação (README, CONTRIBUTING, STYLE_GUIDE)
