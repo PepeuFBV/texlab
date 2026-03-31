@@ -24,18 +24,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Reads conventional commits since the last tag, bumps the version,
-      # and pushes the new tag directly — no PR required.
       - name: Bump version and push tag
         id: tag
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Do not create a release here — we do it in the next step so we
-          # can attach the templates archive in the same release.
           create_annotated_tag: true
-          # Only release if there is at least one conventional commit.
-          # Set to 'patch' to always bump on every push to main.
+          # only release if there is at least one conventional commit.
           default_bump: false
 
       - name: Create GitHub Release
