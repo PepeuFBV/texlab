@@ -61,7 +61,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # Fetch all history and tags so we can resolve and move them
           fetch-depth: 0
 
       - name: Update floating vX and vX.Y tags
