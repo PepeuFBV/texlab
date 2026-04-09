@@ -1,9 +1,8 @@
 {
     "name": "TeX Dev Container",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "context": ".."
-    },
+    "dockerComposeFile": "compose.yaml",
+    "service": "devcontainer",
+    "workspaceFolder": "/workspaces/texacademy",
     "customizations": {
         "vscode": {
             "settings": {
@@ -18,10 +17,6 @@
             ]
         }
     },
-    "runArgs": [
-        "--env-file",
-        ".devcontainer/.env.resources"
-    ],
     "postCreateCommand": "(latexindent --version || latexindent.pl --version) > /tmp/devcontainer-latexindent.log 2>&1 || true",
     "postStartCommand": "bash .devcontainer/start-watchers.sh || true",
     "remoteUser": "vscode"

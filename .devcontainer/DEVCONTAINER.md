@@ -35,12 +35,16 @@ latexmk -pdf -cd -interaction=nonstopmode -file-line-error path/to/main.tex
 
 ## Limites de recursos
 
-Este DevContainer usa o arquivo `.devcontainer/.env.resources` para definir valores de referência:
+Os limites são definidos em `.devcontainer/.env.resources` e aplicados via `compose.yaml`:
 
 - `MEM_LIMIT`: 2G
 - `CPU_LIMIT`: 1
 
-> [!WARNING]
-> A configuração atual usa `--env-file` via `runArgs`, o que injeta essas variáveis como variáveis de ambiente dentro do container, mas **não cria limites reais de memória ou CPU** no Docker. Para limites executados de verdade, use uma configuração baseada em `docker-compose` que mapeie esses valores para `mem_limit`/`cpus` no serviço.
+O `compose.yaml` mapeia essas variáveis para `mem_limit` e `cpus` no serviço Docker, o que cria limites reais de cgroup no kernel — diferentemente do `--env-file` em `runArgs`, que apenas injeta variáveis de ambiente sem restringir recursos.
+
+Para alterar os limites na sua máquina local, edite `.devcontainer/.env.resources` e reconstrua o container.
+
+> [!NOTE]
+> No GitHub Codespaces, os limites de recursos são controlados pelo tipo de máquina escolhida (2-core, 4-core etc.) e podem sobrepor os valores definidos aqui.
 
 Após alterar os limites, reconstrua o container pela Command Palette: "Dev Containers: Rebuild Container".
