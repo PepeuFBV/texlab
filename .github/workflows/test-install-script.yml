@@ -44,34 +44,18 @@ jobs:
 
       - name: Chooser — every path in templates.json maps to an existing directory
         run: |
-          in_programs=0; in_versions=0
-          root_path=""; prog_path=""; ver_path=""
-          arr_stack=(); json_paths=()
-          while IFS= read -r line; do
-            if [[ "$line" == *'"programs"'* && "$line" == *'['* ]]; then arr_stack+=(programs); in_programs=$((in_programs+1)); continue; fi
-            if [[ "$line" == *'"versions"'* && "$line" == *'['* ]]; then arr_stack+=(versions); in_versions=$((in_versions+1)); continue; fi
-            if [[ "$line" == *']'* ]]; then
-              if (( ${#arr_stack[@]} > 0 )); then
-                last_idx=$(( ${#arr_stack[@]} - 1 )); arrkey="${arr_stack[$last_idx]}"
-                unset 'arr_stack[$last_idx]'; arr_stack=( "${arr_stack[@]}" )
-                [[ "$arrkey" == "programs" ]] && in_programs=$((in_programs-1))
-                [[ "$arrkey" == "versions" ]] && in_versions=$((in_versions-1))
-              fi; continue
-            fi
-            if [[ $line =~ \"path\"[[:space:]]*:[[:space:]]*\"([^\"]*)\" ]]; then
-              val="${BASH_REMATCH[1]%/}"
-              if (( in_versions > 0 )); then ver_path="$val"
-              elif (( in_programs > 0 )); then prog_path="$val"
-              else root_path="${root_path:-$val}"; fi
-              if [ -n "${root_path:-}" ] && [ -n "${prog_path:-}" ] && [ -n "${ver_path:-}" ]; then
-                json_paths+=("$root_path/$prog_path/$ver_path")
-                ver_path=""
-              fi
-            fi
-          done < templates.json
-
-          count="${#json_paths[@]}"
-          [ "$count" -gt 0 ] || { echo "ERROR: no paths parsed from templates.json"; exit 1; }
+          mapfile -t json_paths < <(python3 -c "
+          import json, sys
+          with open('templates.json') as f:
+              data = json.load(f)
+          root = data.get('path','').strip('/')
+          for prog in data.get('programs',[]):
+              pp = prog.get('path','').strip('/')
+              for ver in prog.get('versions',[]):
+                  vp = ver.get('path','').strip('/')
+                  print('/'.join(p for p in [root,pp,vp] if p))
+          ")
+          [ "${#json_paths[@]}" -gt 0 ] || { echo "ERROR: no paths parsed from templates.json"; exit 1; }
           failed=0
           for p in "${json_paths[@]}"; do
             if [ -d "templates/$p" ]; then
