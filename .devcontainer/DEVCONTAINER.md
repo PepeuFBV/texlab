@@ -6,11 +6,11 @@ Este DevContainer inclui uma instalação completa do TeX Live e está configura
 
 - Rebuild do container: Command Palette → "Dev Containers: Rebuild Container".
 
-- Depois que o container iniciar, uma compilação com `latexmk` é executada para o projeto de exemplo e watchers em background são iniciados para cada `main.tex` encontrado no workspace.
+- Depois que o container iniciar, watchers em background são iniciados para cada `main.tex` encontrado no workspace.
 
 Comportamento:
 
-- `postCreateCommand` compila `ufrpe/pibic/final/main.tex` uma vez durante a criação do container.
+- `postCreateCommand` verifica se `latexindent` está disponível e registra sua versão em `/tmp/devcontainer-latexindent.log`. Nenhuma compilação automática é realizada na criação.
 
 - `postStartCommand` executa `.devcontainer/start-watchers.sh`, que inicia watchers `latexmk -pvc` para cada `main.tex` encontrado (os logs são gravados em `/tmp`).
 
@@ -18,7 +18,7 @@ Comportamento:
 
 Logs e inspeção:
 
-- Log de build: `/tmp/devcontainer-latex.log` (postCreate)
+- Log de verificação do latexindent: `/tmp/devcontainer-latexindent.log` (postCreate)
 
 - Logs dos watchers: `/tmp/latex-watch-*.log`
 
@@ -35,17 +35,16 @@ latexmk -pdf -cd -interaction=nonstopmode -file-line-error path/to/main.tex
 
 ## Limites de recursos
 
-Este DevContainer usa o arquivo de ambiente `.devcontainer/.env.resources` para fornecer valores conservadores para uso de recursos. Padrões atuais:
+Os limites são definidos em `.devcontainer/.env.resources` e aplicados via `compose.yaml`:
 
 - `MEM_LIMIT`: 2G
 - `CPU_LIMIT`: 1
 
-Para alterar os limites na sua máquina local, edite [`.devcontainer/.env.resources`](.devcontainer/.env.resources) ou sobrescreva as variáveis no seu `devcontainer.json` local antes de reconstruir.
+O `compose.yaml` mapeia essas variáveis para `mem_limit` e `cpus` no serviço Docker, o que cria limites reais de cgroup no kernel — diferentemente do `--env-file` em `runArgs`, que apenas injeta variáveis de ambiente sem restringir recursos.
+
+Para alterar os limites na sua máquina local, edite `.devcontainer/.env.resources` e reconstrua o container.
+
+> [!NOTE]
+> No GitHub Codespaces, os limites de recursos são controlados pelo tipo de máquina escolhida (2-core, 4-core etc.) e podem sobrepor os valores definidos aqui.
 
 Após alterar os limites, reconstrua o container pela Command Palette: "Dev Containers: Rebuild Container".
-
-Comando rápido para reconstruir (Command Palette):
-
-```bash
-# Abra a Command Palette (Ctrl+Shift+P) → "Dev Containers: Rebuild Container"
-```
