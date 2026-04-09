@@ -10,9 +10,21 @@ Foco: templates LaTeX estruturados + ambientes de desenvolvimento reproduzíveis
 
 **1. Script de instalação (recomendado)**
 
+Opção conveniente — instala sempre a versão mais recente do `main`:
+
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/PepeuFBV/texacademy/main/scripts/install.sh)
 ```
+
+Opção com versão fixada — instala a partir de uma tag de release específica (mais segura e reproduzível):
+
+```bash
+# Substitua vX.Y.Z pela tag desejada, por exemplo v1.0.0
+bash <(curl -fsSL https://raw.githubusercontent.com/PepeuFBV/texacademy/vX.Y.Z/scripts/install.sh)
+```
+
+> [!TIP]
+> Instalar por uma tag garante que o template e os scripts não mudam entre execuções. Recomendado para ambientes de produção ou documentos formais.
 
 > [!NOTE]
 > Atualmente só há suporte para Linux/MacOS. Windows via WSL é possível, mas não testado oficialmente.
