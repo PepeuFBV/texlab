@@ -13,56 +13,34 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 JSON_FILE="$REPO_ROOT/templates.json"
 TEMPLATES_DIR="$REPO_ROOT/templates"
 
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "Error: python3 is required to parse templates.json but was not found." >&2
+    exit 2
+fi
+
 errors=0
 
 # -----------------------------------------------------------------------
-# 1. Parse templates.json and collect all declared leaf paths
+# 1. Parse templates.json and collect all declared leaf paths using Python
 # -----------------------------------------------------------------------
-in_programs=0
-in_versions=0
-root_path=""
-prog_path=""
-ver_path=""
-arr_stack=()
-declared_paths=()
+_PY_PATHS='
+import json, sys
 
-while IFS= read -r line; do
-    if [[ "$line" == *'"programs"'* && "$line" == *'['* ]]; then
-        arr_stack+=("programs")
-        in_programs=$((in_programs+1))
-        continue
-    fi
-    if [[ "$line" == *'"versions"'* && "$line" == *'['* ]]; then
-        arr_stack+=("versions")
-        in_versions=$((in_versions+1))
-        continue
-    fi
-    if [[ "$line" == *']'* ]]; then
-        if (( ${#arr_stack[@]} > 0 )); then
-            last_idx=$(( ${#arr_stack[@]} - 1 ))
-            arrkey="${arr_stack[$last_idx]}"
-            unset 'arr_stack[$last_idx]'
-            arr_stack=( "${arr_stack[@]}" )
-            if [ "$arrkey" = "programs" ]; then in_programs=$((in_programs-1)); fi
-            if [ "$arrkey" = "versions" ]; then in_versions=$((in_versions-1)); fi
-        fi
-        continue
-    fi
-    if [[ $line =~ \"path\"[[:space:]]*:[[:space:]]*\"([^\"]*)\" ]]; then
-        val="${BASH_REMATCH[1]%/}"
-        if (( in_versions > 0 )); then
-            ver_path="$val"
-        elif (( in_programs > 0 )); then
-            prog_path="$val"
-        else
-            root_path="${root_path:-$val}"
-        fi
-        if [ -n "${root_path:-}" ] && [ -n "${prog_path:-}" ] && [ -n "${ver_path:-}" ]; then
-            declared_paths+=("$root_path/$prog_path/$ver_path")
-            ver_path=""
-        fi
-    fi
-done < "$JSON_FILE"
+def strip(s):
+    return s.strip("/")
+
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+
+root_path = strip(data.get("path", ""))
+for prog in data.get("programs", []):
+    pp = strip(prog.get("path", ""))
+    for ver in prog.get("versions", []):
+        vp = strip(ver.get("path", ""))
+        print("/".join(p for p in [root_path, pp, vp] if p))
+'
+
+mapfile -t declared_paths < <(python3 -c "$_PY_PATHS" "$JSON_FILE")
 
 if [ ${#declared_paths[@]} -eq 0 ]; then
     echo "ERROR: No paths found in templates.json" >&2
