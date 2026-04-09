@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-# locate templates.json by walking up from the script dir / PWD
 find_templates_json() {
     local script dir script_dir
     script="${BASH_SOURCE[0]}"
@@ -37,7 +36,6 @@ if ! command -v python3 >/dev/null 2>&1; then
     exit 2
 fi
 
-# Parse templates.json with Python — outputs "label<TAB>path" lines.
 _PY_PARSE='
 import json, sys
 
@@ -72,7 +70,6 @@ if [ ${#labels[@]} -eq 0 ]; then
     exit 4
 fi
 
-# If non-interactive, return first path (useful for curl | bash callers)
 if [ ! -t 0 ] || [ ! -t 1 ]; then
     first_path="${paths[0]}"
     if [ -n "${CHOOSER_OUTPUT:-}" ]; then
@@ -83,7 +80,6 @@ if [ ! -t 0 ] || [ ! -t 1 ]; then
     exit 0
 fi
 
-# Use fzf if available (interactive only)
 if command -v fzf >/dev/null 2>&1 && [ -t 0 ]; then
     selected_line=$(for idx in "${!labels[@]}"; do printf '%s\t%s\n' "${labels[idx]}" "${paths[idx]}"; done | fzf --delimiter=$'\t' --with-nth=1 --height=40% --reverse --prompt="Search template> ") || true
     if [ -n "${selected_line:-}" ]; then
@@ -99,7 +95,6 @@ if command -v fzf >/dev/null 2>&1 && [ -t 0 ]; then
     # if fzf cancelled or not selected, fallthrough to other methods
 fi
 
-# Incremental, line-based fuzzy search in pure bash
 inc_search() {
     local prompt="Search template (press enter to choose first match)> "
     local query
@@ -161,7 +156,7 @@ if inc_search; then
     exit 0
 fi
 
-# Fallback numbered selection
+# fallback (numbered list)
 printf '\nAvailable templates (from templates.json):\n'
 declare -A idx2path=()
 i=1
