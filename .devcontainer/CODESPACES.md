@@ -16,11 +16,11 @@ Este repositório inclui um DevContainer em `.devcontainer` preparado para compi
    - `latexindent` (formatação LaTeX)
    - VS Code LaTeX Workshop (extensão)
 
-3. Após o ambiente estar pronto, a compilação inicial do exemplo (`ufrpe/pibic/final`) ocorre automaticamente.
+3. Após o ambiente estar pronto, os watchers `latexmk -pvc` são iniciados automaticamente para cada `main.tex` encontrado. Nenhuma compilação é executada automaticamente na criação — a primeira build ocorre ao salvar um arquivo `.tex` ou ao executar manualmente.
 
 ## Comportamento padrão
 
-- **postCreateCommand**: Compila `ufrpe/pibic/final/main.tex` uma vez durante a criação.
+- **postCreateCommand**: Verifica se `latexindent` está disponível e registra sua versão. Nenhuma compilação automática é realizada na criação.
 - **postStartCommand**: Inicia watchers `latexmk -pvc` para cada `main.tex` encontrado no workspace.
 - **VS Code LaTeX Workshop**: Configurado para auto-build ao salvar arquivos.
 
@@ -32,10 +32,13 @@ Este repositório inclui um DevContainer em `.devcontainer` preparado para compi
 
 ## Recursos e limites
 
-O DevContainer usa configurações conservadoras de recursos (ver `.devcontainer/.env.resources`):
+O DevContainer define valores de referência em `.devcontainer/.env.resources`:
 
 - `MEM_LIMIT`: 2G
 - `CPU_LIMIT`: 1
+
+> [!WARNING]
+> No Codespaces, os limites de recursos são controlados pelo plano da máquina escolhida (2-core, 4-core etc.) e não pelo `docker compose`. Os valores em `.env.resources` são injetados como variáveis de ambiente no container, mas não criam limites reais de memória ou CPU no Codespaces.
 
 > [!NOTE]
 > A imagem completa tem aproximadamente 2-3GB de tamanho, principalmente devido à instalação do TeX Live.

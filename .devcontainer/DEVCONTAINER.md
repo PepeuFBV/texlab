@@ -6,11 +6,11 @@ Este DevContainer inclui uma instalação completa do TeX Live e está configura
 
 - Rebuild do container: Command Palette → "Dev Containers: Rebuild Container".
 
-- Depois que o container iniciar, uma compilação com `latexmk` é executada para o projeto de exemplo e watchers em background são iniciados para cada `main.tex` encontrado no workspace.
+- Depois que o container iniciar, watchers em background são iniciados para cada `main.tex` encontrado no workspace.
 
 Comportamento:
 
-- `postCreateCommand` compila `ufrpe/pibic/final/main.tex` uma vez durante a criação do container.
+- `postCreateCommand` verifica se `latexindent` está disponível e registra sua versão em `/tmp/devcontainer-latexindent.log`. Nenhuma compilação automática é realizada na criação.
 
 - `postStartCommand` executa `.devcontainer/start-watchers.sh`, que inicia watchers `latexmk -pvc` para cada `main.tex` encontrado (os logs são gravados em `/tmp`).
 
@@ -18,7 +18,7 @@ Comportamento:
 
 Logs e inspeção:
 
-- Log de build: `/tmp/devcontainer-latex.log` (postCreate)
+- Log de verificação do latexindent: `/tmp/devcontainer-latexindent.log` (postCreate)
 
 - Logs dos watchers: `/tmp/latex-watch-*.log`
 
@@ -35,17 +35,12 @@ latexmk -pdf -cd -interaction=nonstopmode -file-line-error path/to/main.tex
 
 ## Limites de recursos
 
-Este DevContainer usa o arquivo de ambiente `.devcontainer/.env.resources` para fornecer valores conservadores para uso de recursos. Padrões atuais:
+Este DevContainer usa o arquivo `.devcontainer/.env.resources` para definir valores de referência:
 
 - `MEM_LIMIT`: 2G
 - `CPU_LIMIT`: 1
 
-Para alterar os limites na sua máquina local, edite [`.devcontainer/.env.resources`](.devcontainer/.env.resources) ou sobrescreva as variáveis no seu `devcontainer.json` local antes de reconstruir.
+> [!WARNING]
+> A configuração atual usa `--env-file` via `runArgs`, o que injeta essas variáveis como variáveis de ambiente dentro do container, mas **não cria limites reais de memória ou CPU** no Docker. Para limites executados de verdade, use uma configuração baseada em `docker-compose` que mapeie esses valores para `mem_limit`/`cpus` no serviço.
 
 Após alterar os limites, reconstrua o container pela Command Palette: "Dev Containers: Rebuild Container".
-
-Comando rápido para reconstruir (Command Palette):
-
-```bash
-# Abra a Command Palette (Ctrl+Shift+P) → "Dev Containers: Rebuild Container"
-```
