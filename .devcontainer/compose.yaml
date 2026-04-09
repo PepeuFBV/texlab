@@ -19,5 +19,6 @@ services:
     cpus: '${CPU_LIMIT:-1}'
     volumes:
       - ..:/workspaces/texacademy:cached
-    # Keep the container alive so VS Code can attach.
+      - ${HOME}/.codex:/home/vscode/.codex:rw
+
     command: sleep infinity
