@@ -32,119 +32,40 @@ find_templates_json() {
 
 json_file="$(find_templates_json 2>/dev/null)" || { echo "templates.json not found" >&2; exit 2; }
 
-rtrim() {
-    local s="$1"
-    while [ -n "$s" ] && [ "${s: -1}" = "/" ]; do
-        s="${s:0:$((${#s}-1))}"
-    done
-    printf '%s' "$s"
-}
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "Error: python3 is required to parse templates.json but was not found." >&2
+    exit 2
+fi
 
-# state
-in_programs=0
-in_versions=0
-root_name=""
-root_path=""
-prog_name=""
-prog_path=""
-ver_name=""
-ver_path=""
+# Parse templates.json with Python — outputs "label<TAB>path" lines.
+_PY_PARSE='
+import json, sys
+
+def strip(s):
+    return s.strip("/")
+
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+
+root_path = strip(data.get("path", ""))
+root_name = data.get("name", "")
+for prog in data.get("programs", []):
+    pp = strip(prog.get("path", ""))
+    pn = prog.get("name", "")
+    for ver in prog.get("versions", []):
+        vp = strip(ver.get("path", ""))
+        vn = ver.get("name", "")
+        full_path = "/".join(p for p in [root_path, pp, vp] if p)
+        label = " / ".join(p for p in [root_name, pn, vn] if p)
+        print(f"{label}\t{full_path}")
+'
+
 labels=()
 paths=()
-
-CHOOSER_DEBUG="${CHOOSER_DEBUG:-}"
-
-# Simple, line-oriented parser using bash regex (pure-bash)
-arr_stack=()
-while IFS= read -r line; do
-    if [ -n "${CHOOSER_DEBUG}" ]; then
-        printf 'DBG: LINE: %s\n' "$line" >&2
-    fi
-
-    # detect array openings (rough heuristic)
-    if [[ "$line" == *'"programs"'* && "$line" == *'['* ]]; then
-        arr_stack+=("programs")
-        in_programs=$((in_programs+1))
-        continue
-    fi
-    if [[ "$line" == *'"versions"'* && "$line" == *'['* ]]; then
-        arr_stack+=("versions")
-        in_versions=$((in_versions+1))
-        continue
-    fi
-
-    # detect array closing
-    if [[ "$line" == *']'* ]]; then
-        if (( ${#arr_stack[@]} > 0 )); then
-            last_idx=$(( ${#arr_stack[@]} - 1 ))
-            arrkey="${arr_stack[$last_idx]}"
-            unset 'arr_stack[$last_idx]'
-            arr_stack=( "${arr_stack[@]}" )
-            if [ "$arrkey" = "programs" ]; then in_programs=$((in_programs-1)); fi
-            if [ "$arrkey" = "versions" ]; then in_versions=$((in_versions-1)); fi
-        fi
-        continue
-    fi
-
-    # capture name
-    if [[ $line =~ \"name\"[[:space:]]*:[[:space:]]*\"([^\"]*)\" ]]; then
-        val="${BASH_REMATCH[1]}"
-        if (( in_versions > 0 )); then
-            ver_name="$val"
-        elif (( in_programs > 0 )); then
-            prog_name="$val"
-        else
-            root_name="${root_name:-$val}"
-        fi
-        # if we've captured a full version, emit
-        if [ -n "${ver_name:-}" ] && [ -n "${ver_path:-}" ]; then
-            rp="$(rtrim "$root_path")"
-            pp="$(rtrim "$prog_path")"
-            vp="$(rtrim "$ver_path")"
-            outpath=""
-            if [ -n "$rp" ]; then outpath="$rp"; fi
-            if [ -n "$pp" ]; then outpath="${outpath:+${outpath}/}$pp"; fi
-            if [ -n "$vp" ]; then outpath="${outpath:+${outpath}/}$vp"; fi
-            while [[ "$outpath" == *"//"* ]]; do outpath="${outpath//\/\//\/}"; done
-            outpath="${outpath#/}"
-            labels+=("$root_name / $prog_name / $ver_name")
-            paths+=("$outpath")
-            ver_name=""
-            ver_path=""
-        fi
-        continue
-    fi
-
-    # capture path
-    if [[ $line =~ \"path\"[[:space:]]*:[[:space:]]*\"([^\"]*)\" ]]; then
-        val="${BASH_REMATCH[1]}"
-        if (( in_versions > 0 )); then
-            ver_path="$val"
-        elif (( in_programs > 0 )); then
-            prog_path="$val"
-        else
-            root_path="${root_path:-$val}"
-        fi
-        # if we've captured a full version, emit
-        if [ -n "${ver_name:-}" ] && [ -n "${ver_path:-}" ]; then
-            rp="$(rtrim "$root_path")"
-            pp="$(rtrim "$prog_path")"
-            vp="$(rtrim "$ver_path")"
-            outpath=""
-            if [ -n "$rp" ]; then outpath="$rp"; fi
-            if [ -n "$pp" ]; then outpath="${outpath:+${outpath}/}$pp"; fi
-            if [ -n "$vp" ]; then outpath="${outpath:+${outpath}/}$vp"; fi
-            while [[ "$outpath" == *"//"* ]]; do outpath="${outpath//\/\//\/}"; done
-            outpath="${outpath#/}"
-            labels+=("$root_name / $prog_name / $ver_name")
-            paths+=("$outpath")
-            ver_name=""
-            ver_path=""
-        fi
-        continue
-    fi
-
-done < "$json_file"
+while IFS=$'\t' read -r _label _path; do
+    labels+=("$_label")
+    paths+=("$_path")
+done < <(python3 -c "$_PY_PARSE" "$json_file")
 
 if [ ${#labels[@]} -eq 0 ]; then
     echo "No templates found in $json_file" >&2
